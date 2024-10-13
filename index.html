@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>live frontend preview</title>
+    <style>
+        body {
+            display: flex;
+            background-color: #111;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #editor {
+            height: 50%; /* Editor takes half the height */
+            border: 1px solid #ccc;
+        }
+        #preview {
+            flex-grow: 1; /* Preview takes the remaining height */
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow: auto;
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script src="https://unpkg.com/monaco-editor@0.38.0/min/vs/loader.js"></script>
+    <script>
+        require.config({
+            paths: {
+                'vs': 'https://unpkg.com/monaco-editor@0.38.0/min/vs'
+            }
+        });
+        require(['vs/editor/editor.main'], function() {
+            const editor = monaco.editor.create(
+                document.getElementById('editor'), {
+                    value: '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>My Webpage</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n    <p>This is a sample HTML code.</p>\n</body>\n</html>',
+                    language: 'html',
+                    automaticLayout: true,
+                    theme: 'vs-dark'
+                }
+            );
+
+            function updatePreview() {
+                const html = editor.getValue();
+                const previewFrame = document.getElementById('preview');
+                previewFrame.srcdoc = html; // Update the iframe with the new HTML
+            }
+
+            editor.onDidChangeModelContent(updatePreview); // Update the preview on content change
+            updatePreview(); // Initial preview
+        });
+    </script>
+</head>
+<body>
+    <div id="editor"></div>
+    <iframe id="preview"></iframe>
+</body>
+</html>
